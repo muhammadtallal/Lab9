@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html  ng-app>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.js"></script>
+<script type='text/javascript'>
+angular.module('app', []);
+function MainController($scope,$http){
+    var d = new Date();
+    $scope.month={};$scope.month.y=d.getFullYear();
+	$scope.month.weather="cant fetch data";
+	$http.get("https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(2211027)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=")
+         		.success(function(response) {
+         		$scope.weather = response.query; 
+         		console.log($scope.weather.results.channel.item.condition.temp);
+				$scope.month.weather=$scope.weather.results.channel.item.condition.temp;
+	});
+    if(d.getMonth()==0){$scope.month.m="January";}
+    if(d.getMonth()==1){$scope.month.m="February";}
+    if(d.getMonth()==2){$scope.month.m="March";}
+    if(d.getMonth()==3){$scope.month.m="April";}
+    if(d.getMonth()==4){$scope.month.m="May";}
+    if(d.getMonth()==5){$scope.month.m="June";}
+    if(d.getMonth()==6){$scope.month.m="July";}
+    if(d.getMonth()==7){$scope.month.m="August";}
+    if(d.getMonth()==8){$scope.month.m="September";}
+    if(d.getMonth()==9){$scope.month.m="October";}
+    if(d.getMonth()==10){$scope.month.m="November";}
+    if(d.getMonth()==11){$scope.month.m="December";}
+    var maxweek;
+    if(d.getMonth()==0 ||d.getMonth()==2 || d.getMonth()==4 || d.getMonth()==6 || d.getMonth()==7 || d.getMonth()==9 || d.getMonth()==11     ){
+        maxweek=31;
+    }
+    if(d.getMonth()==1){
+        maxweek=28;
+    }
+    if(d.getMonth()==3 ||d.getMonth()==5 || d.getMonth()==8 || d.getMonth()==10 ){
+        maxweek=30;
+    }
+    $scope.week = [
+        {days: [ ,,,,,, ]},
+        {days: [ ,,,,,, ]},
+        {days: [ ,,,,,, ]},
+	{days: [ ,,,,,, ]},
+        {days: [ ,,,,,, ]},
+        {days: [ ,,,,,, ]},
+        {days: [ ,,,,,, ]}
+    ];
+   var fd=d.getDate(),fd1;
+   
+   while(fd>0){
+        fd=fd-7;
+   }
+   fd=fd+7;
+   var i=2,x=parseInt(d.getDay());
+   
+   $scope.week[1].days[d.getDay()-1]=fd;
+   dday=d.getDay()-2;
+   fd1=fd;
+   while(dday>-1){
+        fd1=fd1-1;
+        $scope.week[1].days[dday]=fd1;
+        dday=dday-1;
+   }
+   dday=d.getDay();
+   fd1=fd+1;
+   while(dday<7 && fd1>0){
+        $scope.week[1].days[dday]=fd1;
+        fd1=fd1+1;
+        dday=dday+1;
+   }
+   if($scope.week[1].days[0]>1){
+        var felem=$scope.week[1].days[0]-1;
+        for(var x=6;x>-1;x--){
+             if(felem>0){
+             $scope.week[0].days[x]=felem;}
+             else{break;}
+	     felem--;
+        }
+   }
+   fd=fd+7;
+     while(fd<32){
+	
+   	$scope.week[i].days[d.getDay()-1]=fd;
+        dday=d.getDay()-2;
+        fd1=fd;
+	while(dday>-1){
+             fd1=fd1-1;
+             $scope.week[i].days[dday]=fd1;
+             dday=dday-1;
+        }
+        dday=d.getDay();
+        fd1=fd+1;
+	while(dday<7 && fd1<=maxweek){
+             $scope.week[i].days[dday]=fd1;
+             fd1=fd1+1;
+             dday=dday+1;
+        }
+        i=i+1;
+        fd=fd+7;
+   }
+   if($scope.week[6].days[6]<maxweek && $scope.week[6].days[6]!=""){
+        var felem=$scope.week[6].days[6]+1;
+        for(var x=0;x<7;x++){
+             if(felem<=maxweek){
+             $scope.week[6].days[x]=felem;}
+             else{break;}
+	     felem++;
+        }
+   }
+   if($scope.week[1].days[d.getDay()-1]==d.getDate()){
+		$scope.week[1].days[d.getDay()-1]=$scope.month.weather;
+   }
+   if($scope.week[2].days[d.getDay()-1]==d.getDate()){
+		$scope.week[2].days[d.getDay()-1]=$scope.month.weather;
+   }
+   if($scope.week[3].days[d.getDay()-1]==d.getDate()){
+		$scope.week[3].days[d.getDay()-1]=$scope.month.weather;
+   }
+   if($scope.week[4].days[d.getDay()-1]==d.getDate()){
+		$scope.week[4].days[d.getDay()-1]=$scope.month.weather;
+   }
+   if($scope.week[5].days[d.getDay()-1]==d.getDate()){
+		$scope.week[5].days[d.getDay()-1]=$scope.month.weather;
+   }
+   if($scope.week[6].days[d.getDay()-1]==d.getDate()){
+		$scope.week[6].days[d.getDay()-1]=$scope.month.weather;
+   }
+}
+</script>
+</head>
+<body> 
+  <div ng-app="app">
+    <div ng-controller="MainController">
+<h1>{{month.m}},{{month.y}}</h1>
+<table border="1" style="width:100% ">
+<tr>
+    <td style="border: 1px solid green;background-color: green; color: white;">Mon</td>
+    <td style="border: 1px solid green;background-color: green; color: white;">Tue</td>
+    <td style="border: 1px solid green;background-color: green; color: white;">Wed</td>
+    <td style="border: 1px solid green;background-color: green; color: white;">Thur</td>
+    <td style="border: 1px solid green;background-color: green; color: white;">Fri</td>
+    <td style="border: 1px solid green;background-color: green; color: white;">Sat</td>
+    <td style="border: 1px solid green;background-color: green; color: white;">Sun</td>
+  </tr>
+  <tr data-ng-repeat="row in week[0]">
+    <td data-ng-repeat="daysdata in row"> {{daysdata}}</td>
+  </tr>
+  <tr data-ng-repeat="row in week[1]">
+    <td data-ng-repeat="daysdata in row"> {{daysdata}}</td>
+  </tr>
+  <tr data-ng-repeat="row in week[2]">
+    <td data-ng-repeat="daysdata in row"> {{daysdata}}</td>
+  </tr>
+  <tr data-ng-repeat="row in week[3]">
+    <td data-ng-repeat="daysdata in row"> {{daysdata}}</td>
+  </tr>
+  <tr data-ng-repeat="row in week[4]">
+    <td data-ng-repeat="daysdata in row"> {{daysdata}}</td>
+  </tr>
+ <tr data-ng-repeat="row in week[5]">
+    <td data-ng-repeat="daysdata in row"> {{daysdata}}</td>
+  </tr>
+</table>
+        
+  </div>
+</body>
+</html>

@@ -1,0 +1,8 @@
+Name: Muhammad Tallal
+Class: BESE-4B 
+Reg. No.: 04939
+
+GitHub Link: github.com/muhammadtallal/lab9
+
+Description:
+I have used angular js to populate 2d array and display it in a table. I tried fetching the weather too but it gives an error which can be shown in console.
